@@ -6,8 +6,21 @@
     <title>home</title>
 </head>
 <body>
-    <h1>Starting page</h1>
-    <p>Content for everyone</p>
-    <a href="{{url_for('login')}}">login</a>
+
+    {% if role == 'admin' %}
+        <h2>{{ username }} dashboard</h2>
+        <p>Here you can upload lottery results.</p>
+        <!-- Conten for admin -->
+    {% elif role == 'guest' %}
+        <h2>Hello, {{ username }}!</h2>
+        <p>Here you can see results of the lottery.</p>
+        <!-- Content for guest -->
+        {% else %}
+        <!-- If role is not defined (user is not authorised), then show a common page for all users -->
+        <h1>Starting page</h1>
+        <p>Content for everyone</p>
+        <a href="{{url_for('login')}}">Login</a>
+    {% endif %}
+
 </body>
 </html>
