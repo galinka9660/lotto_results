@@ -1,6 +1,13 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
+
+load_dotenv()   #loads environment variables from .env file
+app.secret_key = os.getenv('SECRET_KEY')
+
+# print(secret_key)
 
 # defining probable users
 users = {
@@ -10,8 +17,11 @@ users = {
 
 @app.route("/")
 def home():
-    role = request.args.get('role', None)
-    return render_template("home.html", role=role)
+    username = session.get('username')
+    role = session.get('role')
+    if username and role:
+        return render_template("home.html", username=username, role=role)
+    return render_template("home.html")
 
 @app.route("/login", methods=['GET','POST'])
 def login():   
@@ -21,10 +31,17 @@ def login():
  
         for user in users:
             if username == user and password == users[user]['password']:
-                role = users[user]['role']
-                return render_template("home.html", username=username, role=role)
+                # save parameters from a user in a session
+                session['username'] = username  
+                session['role'] = users[username]['role']
+                return redirect(url_for('home'))
 
     return render_template("login.html") # shows the page with GET-request (form with login and Password) 
+
+@app.route("/logout")
+def logout():
+    session.clear()  # clears datas 
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     app.run(debug=True)

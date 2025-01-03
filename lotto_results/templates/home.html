@@ -10,10 +10,12 @@
     {% if role == 'admin' %}
         <h2>{{ username }} dashboard</h2>
         <p>Here you can upload lottery results.</p>
+        <a href="{{ url_for('logout') }}">Logout</a>
         <!-- Conten for admin -->
     {% elif role == 'guest' %}
         <h2>Hello, {{ username }}!</h2>
         <p>Here you can see results of the lottery.</p>
+        <a href="{{ url_for('logout') }}">Logout</a>
         <!-- Content for guest -->
         {% else %}
         <!-- If role is not defined (user is not authorised), then show a common page for all users -->
