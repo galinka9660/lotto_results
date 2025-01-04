@@ -10,14 +10,45 @@
     {% if role == 'admin' %}
         <h2>{{ username }} dashboard</h2>
         <p>Here you can upload lottery results.</p>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" accept=".json" required><br><br>            
+            <button type="submit">Upload</button><br><br>
+        </form>
         <a href="{{ url_for('logout') }}">Logout</a>
-        <!-- Conten for admin -->
+        {% if data %}
+            <h2>Gamer Data</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gamer ID</th>
+                        <th>Gamer Numbers</th>
+                        <th>Hits of 12</th>
+                        <th>Hits of 50</th>
+                        <th>Prize</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in data %}
+                        <tr>
+                            <td>{{ entry["gamer id"] }}</td>
+                            <td>{{ entry["gamer numbers"] }}</td>
+                            <td>{{ entry["hits of 12"] }}</td>
+                            <td>{{ entry["hits of 50"] }}</td>
+                            <td>{{ entry["prize"] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif request.method == 'POST' %}
+            <p>No file uploaded or file is not in the correct format.</p>
+        {% endif %}
+        <!-- Content for admin -->
     {% elif role == 'guest' %}
         <h2>Hello, {{ username }}!</h2>
         <p>Here you can see results of the lottery.</p>
         <a href="{{ url_for('logout') }}">Logout</a>
         <!-- Content for guest -->
-        {% else %}
+    {% else %}
         <!-- If role is not defined (user is not authorised), then show a common page for all users -->
         <h1>Starting page</h1>
         <p>Content for everyone</p>

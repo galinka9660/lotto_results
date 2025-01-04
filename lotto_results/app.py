@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from dotenv import load_dotenv
 import os
+import json
 
 app = Flask(__name__)
 
@@ -15,13 +16,17 @@ users = {
     "guest": {"password": "123", "role": "guest"}
 }
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
+    data = None
     username = session.get('username')
     role = session.get('role')
     if username and role:
-        return render_template("home.html", username=username, role=role)
-    return render_template("home.html")
+        if request.method == "POST":
+            file = request.files.get('file')    # receive file
+            if file and file.filename.endswith('.json'): # check if it is a json file
+                data = json.load(file)  # read a file
+    return render_template("home.html", username=username, role=role, data=data)
 
 @app.route("/login", methods=['GET','POST'])
 def login():   
